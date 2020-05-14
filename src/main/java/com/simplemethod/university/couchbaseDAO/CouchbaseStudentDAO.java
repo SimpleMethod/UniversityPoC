@@ -137,6 +137,11 @@ public class CouchbaseStudentDAO {
      */
     public void findAllBySubjectsNameAndIndependentStudyGrades(String subjectName, Integer grades) {
         final QueryResult result = cluster.query("SELECT *  From `" + couchbaseConfig.getBucketName()[0] + "` UNNEST " + couchbaseConfig.getBucketName()[0] + ".studentSubjectsModelList AS relation WHERE relation.independentStudy =" + grades + " AND relation.name=\"" + subjectName + "\";", queryOptions().metrics(true));
+        if( result.rowsAsObject().isEmpty())
+        {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Brak danych!|@"));
+            return;
+        }
         for (JsonObject row : result.rowsAsObject()) {
             getStudent(row.getObject(couchbaseConfig.getBucketName()[0]).getInt("albumNumber").toString());
             System.out.print("\n");
@@ -151,6 +156,11 @@ public class CouchbaseStudentDAO {
      */
     public void findAllBySubjectsNameAndDiscussionGrades(String subjectName, Integer grades) {
         final QueryResult result = cluster.query("SELECT *  From `" + couchbaseConfig.getBucketName()[0] + "` UNNEST " + couchbaseConfig.getBucketName()[0] + ".studentSubjectsModelList AS relation WHERE relation.discussion =" + grades + " AND relation.name=\"" + subjectName + "\";", queryOptions().metrics(true));
+        if( result.rowsAsObject().isEmpty())
+        {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Brak danych!|@"));
+            return;
+        }
         for (JsonObject row : result.rowsAsObject()) {
             getStudent(row.getObject(couchbaseConfig.getBucketName()[0]).getInt("albumNumber").toString());
             System.out.print("\n");
@@ -165,6 +175,11 @@ public class CouchbaseStudentDAO {
      */
     public void findAllBySubjectsNameAndLaboratoryGrades(String subjectName, Integer grades) {
         final QueryResult result = cluster.query("SELECT *  From `" + couchbaseConfig.getBucketName()[0] + "` UNNEST " + couchbaseConfig.getBucketName()[0] + ".studentSubjectsModelList AS relation WHERE relation.laboratory =" + grades + " AND relation.name=\"" + subjectName + "\";", queryOptions().metrics(true));
+        if( result.rowsAsObject().isEmpty())
+        {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Brak danych!|@"));
+            return;
+        }
         for (JsonObject row : result.rowsAsObject()) {
             getStudent(row.getObject(couchbaseConfig.getBucketName()[0]).getInt("albumNumber").toString());
             System.out.print("\n");
@@ -179,6 +194,12 @@ public class CouchbaseStudentDAO {
      */
     public void findAllBySubjectsNameAndLectureGrades(String subjectName, Integer grades) {
         final QueryResult result = cluster.query("SELECT *  From `" + couchbaseConfig.getBucketName()[0] + "` UNNEST " + couchbaseConfig.getBucketName()[0] + ".studentSubjectsModelList AS relation WHERE relation.lecture =" + grades + " AND relation.name=\"" + subjectName + "\";", queryOptions().metrics(true));
+
+        if( result.rowsAsObject().isEmpty())
+        {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Brak danych!|@"));
+            return;
+        }
         for (JsonObject row : result.rowsAsObject()) {
             getStudent(row.getObject(couchbaseConfig.getBucketName()[0]).getInt("albumNumber").toString());
             System.out.print("\n");

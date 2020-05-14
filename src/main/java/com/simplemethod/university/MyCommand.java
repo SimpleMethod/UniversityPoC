@@ -17,22 +17,22 @@ public class MyCommand implements Runnable {
     @Autowired
     CouchbaseConfig couchbaseConfig;
 
-   // @Autowired
-  //  CouchbaseStudentDAO couchbase;
+    // @Autowired
+    //  CouchbaseStudentDAO couchbase;
 
     @Autowired
     MainView mainView;
 
-    @CommandLine.Option(names = {"-ip", "--ipaddress"}, description = "Server IP address ")
+    @CommandLine.Option(names = {"-ip", "--ipaddress"}, description = "Server IP address.")
     private String[] ipAddress = new String[]{"localhost"};
 
-    @CommandLine.Option(names = {"-l", "--login"}, description = "Login to database")
+    @CommandLine.Option(names = {"-l", "--login"}, description = "Login to database.")
     private String[] login = new String[]{"dev"};
 
-    @CommandLine.Option(names = {"-p", "--password"}, description = "Password to database")
+    @CommandLine.Option(names = {"-p", "--password"}, description = "Password to database.")
     private String[] password = new String[]{"dev2137"};
 
-    @CommandLine.Option(names = {"-b", "--bucket"}, description = "Bucket name")
+    @CommandLine.Option(names = {"-b", "--bucket"}, description = "Bucket name.")
     private String[] bucket = new String[]{"university"};
 
 
@@ -40,14 +40,14 @@ public class MyCommand implements Runnable {
     public void run() {
         couchbaseConfig.init(ipAddress, login, password, bucket);
         mainView.menu();
-       // couchbase.init();
+        // couchbase.init();
 
-       // couchbase.findAllByCurrentSemester();
-       //couchbase.setStudentEmailByAlbumNumber(85218,"m.mlodawski@simplemethod.io");
+        // couchbase.findAllByCurrentSemester();
+        //couchbase.setStudentEmailByAlbumNumber(85218,"m.mlodawski@simplemethod.io");
         //couchbase.setStudentGradesByAlbumNumberAndSubjectNameAndIndependentStudyType(85218,"PSR",3);
-       // couchbase.findOneByAlbumNumber(85218);
+        // couchbase.findOneByAlbumNumber(85218);
 
-       // couchbase.findAllBySubjectsNameAndLectureGrades("PSR",6);
+        // couchbase.findAllBySubjectsNameAndLectureGrades("PSR",6);
 
 
     }

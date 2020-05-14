@@ -18,8 +18,8 @@ public class MainView {
     CouchbaseStudentDAO couchbase;
 
     public void menu() throws IOException {
-        for (;;)
-        {
+        couchbase.init();
+        for (; ; ) {
             searchMenu();
         }
     }
@@ -38,7 +38,7 @@ public class MainView {
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red)  [8]|@ Zamknięcie programu"));
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String input =  br.readLine();
+        String input = br.readLine();
         if (isNumeric(input)) {
             int parseInt = Integer.parseInt(input);
             switch (parseInt) {
@@ -77,8 +77,9 @@ public class MainView {
     /**
      *
      */
-    public void findAllStudentsMenu() {
-        //1
+    public void findAllStudentsMenu() throws IOException {
+        couchbase.findAll();
+        waitForEnter();
     }
 
 
@@ -86,56 +87,105 @@ public class MainView {
         System.out.print("\n");
         System.out.println("Podaj numer albumu:");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String input =  br.readLine();
+        String input = br.readLine();
         if (isNumeric(input)) {
-
-        }
-        else
-        {
+            couchbase.findOneByAlbumNumber(Integer.parseInt(input));
+            waitForEnter();
+        } else {
             System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Menu przyjmuje tylko liczby!|@"));
         }
     }
-        //2
-
 
     /**
      *
      */
-    public void searchMenuBySubjectHelper() {
+    public void searchMenuBySubjectHelper() throws IOException {
         //3
         System.out.print("\n");
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [1]|@ Wyszukiwanie studentów, którzy uzyskali ocen? z przedmiotu, typ: Wyk?ad"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [3]|@ Wyszukiwanie studentów, którzy uzyskali ocen? z przedmiotu, typ: ?wiczenia"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [4]|@ Wyszukiwanie studentów, którzy uzyskali ocen? z przedmiotu, typ: Laboratorium"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [5]|@ Wyszukiwanie studentów, którzy uzyskali ocen? z przedmiotu, typ: Projekt"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [1]|@ Wyszukiwanie studentów, którzy uzyskali ocene z przedmiotu, typ: Wyklad"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [2]|@ Wyszukiwanie studentów, którzy uzyskali ocene z przedmiotu, typ: Cwiczenia"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [3]|@ Wyszukiwanie studentów, którzy uzyskali ocene z przedmiotu, typ: Laboratorium"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [4]|@ Wyszukiwanie studentów, którzy uzyskali ocene z przedmiotu, typ: Projekt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = br.readLine();
+        searchMenuBySubject(Integer.parseInt(input));
 
     }
 
-    public void searchMenuBySubject(Integer option) {
-        //3
+    public void searchMenuBySubject(Integer option) throws IOException {
+        System.out.print("\n");
+        System.out.println("Podaj nazwe przdmiotu:");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String subjectName = br.readLine();
+        System.out.print("\n");
+        System.out.println("Podaj ocenę z przdmiotu:");
+        String grade = br.readLine();
+
+        if (isNumeric(grade)) {
+            switch (option) {
+                case 1:
+                    couchbase.findAllBySubjectsNameAndLectureGrades(subjectName, Integer.parseInt(grade));
+                    waitForEnter();
+                    break;
+                case 2:
+                    couchbase.findAllBySubjectsNameAndDiscussionGrades(subjectName, Integer.parseInt(grade));
+                    waitForEnter();
+                    break;
+                case 3:
+                    couchbase.findAllBySubjectsNameAndLaboratoryGrades(subjectName, Integer.parseInt(grade));
+                    waitForEnter();
+                    break;
+                case 4:
+                    couchbase.findAllBySubjectsNameAndIndependentStudyGrades(subjectName, Integer.parseInt(grade));
+                    waitForEnter();
+                    break;
+            }
+        } else {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Menu przyjmuje tylko liczby!|@"));
+        }
     }
 
     public void addNewStudent() {
         //4
     }
 
-    public void setStudentByEmail()
-    {
-        //5
+    public void setStudentByEmail() throws IOException {
+        System.out.print("\n");
+        System.out.println("Podaj numer albumu:");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String albumNumber = br.readLine();
+        System.out.print("\n");
+        System.out.println("Podaj nowy adres e-mail:");
+        String email = br.readLine();
+        if (isNumeric(albumNumber)) {
+            couchbase.setStudentEmailByAlbumNumber(Integer.parseInt(albumNumber), email);
+        } else {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Menu przyjmuje tylko liczby!|@"));
+        }
+
     }
 
     public void updateMenuBySubject() {
         //6
         System.out.print("\n");
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [1]|@ Zmiana oceny z przedmiotu, typ: Wyk?ad"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [3]|@ Zmiana oceny z przedmiotu, typ: ?wiczenia"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [1]|@ Zmiana oceny z przedmiotu, typ: Wyklad"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [3]|@ Zmiana oceny z przedmiotu, typ: Cwiczenia"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [4]|@ Zmiana oceny z przedmiotu, typ: Laboratorium"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [5]|@ Zmiana oceny z przedmiotu, typ: Projekt"));
 
     }
 
-    public void RemoveUser() {
-        //7
+    public void RemoveUser() throws IOException {
+        System.out.print("\n");
+        System.out.println("Podaj numer albumu:");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = br.readLine();
+        if (isNumeric(input)) {
+            couchbase.removeStudentByAlbumNumber(Integer.parseInt(input));
+            waitForEnter();
+        } else {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Menu przyjmuje tylko liczby!|@"));
+        }
     }
 
 
@@ -146,5 +196,9 @@ public class MainView {
             return false;
         }
         return pattern.matcher(strNum).matches();
+    }
+
+    public static void waitForEnter() throws IOException {
+        //TODO Dodać obsługę czekania
     }
 }
