@@ -1,5 +1,6 @@
 package com.simplemethod.university.couchbaseModels.student;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Resource
+@AllArgsConstructor
 public class StudentSubjectsModel {
     @NotEmpty
     String name;

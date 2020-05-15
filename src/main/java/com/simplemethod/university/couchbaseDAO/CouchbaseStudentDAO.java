@@ -51,7 +51,7 @@ public class CouchbaseStudentDAO {
         }
     }
 
-    /**
+    /**4
      * Deleting a student from bucket.
      *
      * @param albumNumber Student album number.
@@ -91,7 +91,7 @@ public class CouchbaseStudentDAO {
      * @param subjectNName Subject name.
      * @param grade        New grade to update.
      */
-    public void setStudentGradesByAlbumNumberAndSubjectNameAndIndependentStudyType(Integer albumNumber, String subjectNName, Integer grade) {
+    public void setStudentGradesByAlbumNumberAndSubjectNameAndIndependentStudyType(Integer albumNumber, String subjectNName, Float grade) {
         updateSubject(albumNumber, subjectNName, grade, "independentStudy");
     }
 
@@ -103,7 +103,7 @@ public class CouchbaseStudentDAO {
      * @param grade        New grade to update.
      */
 
-    public void setStudentGradesByAlbumNumberAndSubjectNameAndDiscussionType(Integer albumNumber, String subjectNName, Integer grade) {
+    public void setStudentGradesByAlbumNumberAndSubjectNameAndDiscussionType(Integer albumNumber, String subjectNName, Float grade) {
         updateSubject(albumNumber, subjectNName, grade, "discussion");
     }
 
@@ -114,7 +114,7 @@ public class CouchbaseStudentDAO {
      * @param subjectNName Subject name.
      * @param grade        New grade to update.
      */
-    public void setStudentGradesByAlbumNumberAndSubjectNameAndLaboratoryType(Integer albumNumber, String subjectNName, Integer grade) {
+    public void setStudentGradesByAlbumNumberAndSubjectNameAndLaboratoryType(Integer albumNumber, String subjectNName, Float grade) {
         updateSubject(albumNumber, subjectNName, grade, "laboratory");
     }
 
@@ -125,7 +125,7 @@ public class CouchbaseStudentDAO {
      * @param subjectNName Subject name.
      * @param grade        New grade to update.
      */
-    public void setStudentGradesByAlbumNumberAndSubjectNameAndLectureType(Integer albumNumber, String subjectNName, Integer grade) {
+    public void setStudentGradesByAlbumNumberAndSubjectNameAndLectureType(Integer albumNumber, String subjectNName, Float grade) {
         updateSubject(albumNumber, subjectNName, grade, "lecture");
     }
 
@@ -289,7 +289,7 @@ public class CouchbaseStudentDAO {
      * @param grade        New grade to update.
      * @param type         Type of activity.
      */
-    private void updateSubject(Integer albumNumber, String subjectNName, Integer grade, String type) {
+    private void updateSubject(Integer albumNumber, String subjectNName, Float grade, String type) {
         boolean update=false;
         GetResult getResult = null;
         try {
