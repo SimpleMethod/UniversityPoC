@@ -1,6 +1,7 @@
 package com.simplemethod.university;
 
 
+import com.simplemethod.university.couchbaseDAO.CouchbaseLecturerDAO;
 import com.simplemethod.university.couchbaseDAO.CouchbaseStudentDAO;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class MyCommand implements Runnable {
 
     @Autowired
     CouchbaseConfig couchbaseConfig;
+
+    @Autowired
+    CouchbaseLecturerDAO couchbaseLecturerDAO;
 
     // @Autowired
     //  CouchbaseStudentDAO couchbase;
@@ -33,12 +37,13 @@ public class MyCommand implements Runnable {
     private String[] password = new String[]{"dev2137"};
 
     @CommandLine.Option(names = {"-b", "--bucket"}, description = "Bucket name.")
-    private String[] bucket = new String[]{"university"};
+    private String[] bucket = new String[]{"university","universityLecturer"};
 
 
     @SneakyThrows
     public void run() {
         couchbaseConfig.init(ipAddress, login, password, bucket);
+        couchbaseLecturerDAO.init(ipAddress,login,password,bucket);
         mainView.menu();
         // couchbase.init();
 

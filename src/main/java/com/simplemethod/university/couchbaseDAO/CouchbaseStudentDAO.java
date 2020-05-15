@@ -51,7 +51,7 @@ public class CouchbaseStudentDAO {
         }
     }
 
-    /**4
+    /**
      * Deleting a student from bucket.
      *
      * @param albumNumber Student album number.
@@ -206,6 +206,24 @@ public class CouchbaseStudentDAO {
         }
     }
 
+    /**
+     * Search bucket with group pattern and print students object.
+     *
+     * @param subjectName Subject name.
+     * @param group      Student group.
+     */
+    public void findAllBySubjectsNameAndGroup(String subjectName, String group) {
+        final QueryResult result = cluster.query("SELECT *  From `" + couchbaseConfig.getBucketName()[0] + "` UNNEST " + couchbaseConfig.getBucketName()[0] + ".studentSubjectsModelList AS relation WHERE relation.`group`=\"" + group + "\" AND relation.name=\"" + subjectName + "\";", queryOptions().metrics(true));
+        if( result.rowsAsObject().isEmpty())
+        {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Brak danych!|@"));
+            return;
+        }
+        for (JsonObject row : result.rowsAsObject()) {
+            getStudent(row.getObject(couchbaseConfig.getBucketName()[0]).getInt("albumNumber").toString());
+            System.out.print("\n");
+        }
+    }
 
     /**
      * Returns all students.

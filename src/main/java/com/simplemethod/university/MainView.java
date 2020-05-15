@@ -1,7 +1,10 @@
 package com.simplemethod.university;
 
 
+import com.simplemethod.university.couchbaseDAO.CouchbaseLecturerDAO;
 import com.simplemethod.university.couchbaseDAO.CouchbaseStudentDAO;
+import com.simplemethod.university.couchbaseModels.lecturer.LecturerModel;
+import com.simplemethod.university.couchbaseModels.lecturer.LecturerSubjectModel;
 import com.simplemethod.university.couchbaseModels.student.StudentModel;
 import com.simplemethod.university.couchbaseModels.student.StudentSubjectsModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +25,17 @@ public class MainView {
     @Autowired
     CouchbaseStudentDAO couchbase;
 
+    @Autowired
+    CouchbaseLecturerDAO couchbaseLecturerDAO;
+
     /**
      * Main menu.
+     *
      * @throws IOException Terminal does not support buffer.
      */
     public void menu() throws IOException {
         couchbase.init();
+        couchbaseLecturerDAO.initConnection();
         for (; ; ) {
             searchMenu();
         }
@@ -49,7 +57,11 @@ public class MainView {
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [5]|@ Zmiana adresu e-mail studenta"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [6]|@ Zmiana oceny z przedmiotu danego studenta"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [7]|@ Usunięcie studenta"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red)  [8]|@ Zamknięcie programu"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [8]|@ Dodanie wykładowcy"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [9]|@ Usunięcie wykładowcy"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [10]|@ Wyszukiwanie wykładowcy po adresie e-mail"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [11]|@ Lista studentów w grupie"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red)  [12]|@ Zamknięcie programu"));
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String input = br.readLine();
@@ -75,9 +87,21 @@ public class MainView {
                     updateMenuBySubjectHelper();
                     break;
                 case 7:
-                    RemoveUser();
+                    removeStudent();
                     break;
                 case 8:
+                    addNewLecturer();
+                    break;
+                case 9:
+                    removeLecturer();
+                    break;
+                case 10:
+                    findLecturerByEmail();
+                    break;
+                case 11:
+                    findAllBySubjectsNameAndGroup();
+                    break;
+                case 12:
                     Runtime.getRuntime().exit(1);
                     break;
                 default:
@@ -113,6 +137,47 @@ public class MainView {
             System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Menu przyjmuje tylko liczby!|@"));
         }
     }
+
+    /**
+     * Search lecturer by email.
+     *
+     * @throws IOException Terminal does not support buffer.
+     */
+    public void findLecturerByEmail() throws IOException {
+        System.out.print("\n");
+        System.out.println("Podaj adres email:");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = br.readLine();
+        couchbaseLecturerDAO.getLecturer(input);
+    }
+
+
+    /**
+     * Search student by group.
+     *
+     * @throws IOException Terminal does not support buffer.
+     */
+    public void findAllBySubjectsNameAndGroup() throws IOException {
+
+        System.out.print("\n");
+        System.out.println("Podaj nazwę przedmiotu:");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String subject = br.readLine();
+        System.out.println("Podaj grupe dziekańską:");
+        String group = br.readLine();
+        try {
+            if (subject == null || group == null) {
+                System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Bledne dane!|@"));
+                return;
+            }
+        } catch (NullPointerException e) {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Bledne dane!|@"));
+            return;
+        }
+        couchbase.findAllBySubjectsNameAndGroup(subject, group);
+
+    }
+
 
     /**
      * Method of menu printing.
@@ -218,7 +283,92 @@ public class MainView {
         } else {
             System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Numer albumu oraz aktualny semestr musi być liczbą!|@"));
         }
+    }
 
+    /**
+     * Adding a new lecturer.
+     *
+     * @throws IOException Terminal does not support buffer.
+     */
+    public void addNewLecturer() throws IOException {
+        LecturerModel lecturerModel = new LecturerModel();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(white) Menu dodawania nowego wykładowcy|@"));
+        System.out.print("\n");
+        System.out.println("Imie:");
+        String firstName = br.readLine();
+        System.out.println("Nazwisko:");
+        String secondName = br.readLine();
+        System.out.println("Adres email:");
+        String email = br.readLine();
+        System.out.println("Aktualny stopień naukowy:");
+        String degree = br.readLine();
+        List<LecturerSubjectModel> studentSubjectsModels = new ArrayList<>();
+
+        for (; ; ) {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(white) Menu dodawania przedmiotów|@"));
+            for (; ; ) {
+
+                System.out.println("Nazwa przedmiotu:");
+                String name = br.readLine();
+                System.out.println("Grupa dziekańska:");
+                String group = br.readLine();
+                System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [1]|@ Prowadzony przedmiot: Wyklad"));
+                System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [2]|@ Prowadzony przedmiot: Cwiczenia"));
+                System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [3]|@ Prowadzony przedmiot: Laboratorium"));
+                System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [4]|@ Prowadzony przedmiot: Projekt"));
+                String type = br.readLine();
+                try {
+                    if (name == null || group == null || !isNumeric(type)) {
+                        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Bledne dane!|@"));
+                    }
+                } catch (NullPointerException e) {
+                    System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Bledne dane!|@"));
+                }
+
+                switch (type) {
+                    case "1":
+                        type="Wyklad";
+                        break;
+                    case "2":
+                        type="Cwiczenia";
+                        break;
+                    case "3":
+                        type="Laboratorium";
+                        break;
+                    case "4":
+                        type="Projekt";
+                        break;
+                    default:
+                        break;
+                }
+                studentSubjectsModels.add(new LecturerSubjectModel(name,group,type));
+                System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(white) Dodawanie kolejnego przedmiotu Y/N?|@"));
+                String nextSubject = br.readLine();
+                if (nextSubject.equals("N")) {
+                   break;
+                }
+            }
+
+            try {
+                if (firstName == null || secondName == null || email == null || degree == null || studentSubjectsModels.isEmpty()) {
+                    System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Dane nie mogą być puste!|@"));
+                    return;
+                }
+            } catch (NullPointerException e) {
+                System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Dane nie mogą być puste!|@"));
+                return;
+            }
+            lecturerModel.setId(email);
+            lecturerModel.setFirstName(firstName);
+            lecturerModel.setSecondName(secondName);
+            lecturerModel.setEmail(email);
+            lecturerModel.setDegree(degree);
+            lecturerModel.setLecturerSubjectModelList(studentSubjectsModels);
+           System.out.println( lecturerModel.toString());
+            couchbaseLecturerDAO.saveLecturer(email, lecturerModel);
+            break;
+        }
     }
 
     /**
@@ -292,6 +442,7 @@ public class MainView {
 
     /**
      * Updating student grades.
+     *
      * @throws IOException Terminal does not support buffer.
      */
     public void updateMenuBySubjectHelper() throws IOException {
@@ -302,14 +453,14 @@ public class MainView {
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [4]|@ Zmiana oceny z przedmiotu, typ: Laboratorium"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(blue)  [5]|@ Zmiana oceny z przedmiotu, typ: Projekt"));
         String input = br.readLine();
-        if (isNumeric(input))
-        {
+        if (isNumeric(input)) {
             updateMenuBySubject(Integer.parseInt(input));
         }
     }
 
     /**
      * Updating student grades.
+     *
      * @param option Selection of operations.
      * @throws IOException Terminal does not support buffer.
      */
@@ -353,11 +504,11 @@ public class MainView {
     }
 
     /**
-     * Deleting  user.
+     * Deleting  student.
      *
      * @throws IOException Terminal does not support buffer.
      */
-    public void RemoveUser() throws IOException {
+    public void removeStudent() throws IOException {
         System.out.print("\n");
         System.out.println("Podaj numer albumu:");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -370,6 +521,18 @@ public class MainView {
         }
     }
 
+    /**
+     * Deleting  lecturer.
+     *
+     * @throws IOException Terminal does not support buffer.
+     */
+    public void removeLecturer() throws IOException {
+        System.out.print("\n");
+        System.out.println("Podaj adres email:");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = br.readLine();
+        couchbaseLecturerDAO.removeLecturerByID(input);
+    }
 
     private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
