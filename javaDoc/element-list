@@ -1,0 +1,7 @@
+com.simplemethod.university
+com.simplemethod.university.couchbaseDAO
+com.simplemethod.university.couchbaseModels.lecturer
+com.simplemethod.university.couchbaseModels.student
+com.simplemethod.university.mongodbDAO
+com.simplemethod.university.mongodbModel.lecturer
+com.simplemethod.university.mongodbModel.student
