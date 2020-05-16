@@ -4,15 +4,12 @@ import com.couchbase.client.core.error.DocumentExistsException;
 import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
-import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.json.JsonArray;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
-import com.couchbase.client.java.kv.PersistTo;
 import com.couchbase.client.java.query.QueryResult;
 import com.simplemethod.university.CouchbaseConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import picocli.CommandLine;
 
@@ -288,13 +285,13 @@ public class CouchbaseStudentDAO {
         System.out.println("Oceny studenta:");
 
 
-        String subject = "| %-41s | %-18s | %-18d | %-18d | %-18d | %-19d |%n";
+        String subject = "| %-41s | %-18s | %-18f | %-18f | %-18f | %-19f |%n";
         System.out.format("+-------------------------------------------+--------------------+--------------------+--------------------+--------------------+---------------------+%n");
         System.out.format("|  Nazwa przedmiotu                         |  Grupa             |  Wykład            |  Laboratorium      |  Ćwiczenia         |  Projekt            |%n");
         for (int i = 0; i < subjects.size(); i++) {
             JsonObject object = subjects.getObject(i);
             System.out.format("+-------------------------------------------+--------------------+--------------------+--------------------+--------------------+---------------------+%n");
-            System.out.format(subject, object.getString("name"), object.getString("group"), object.getInt("lecture"), object.getInt("laboratory"), object.getInt("discussion"), object.getInt("independentStudy"));
+            System.out.format(subject, object.getString("name"), object.getString("group"), object.getDouble("lecture"), object.getDouble("laboratory"), object.getDouble("discussion"), object.getDouble("independentStudy"));
         }
         System.out.format("+-------------------------------------------+--------------------+--------------------+--------------------+--------------------+---------------------+%n");
     }
