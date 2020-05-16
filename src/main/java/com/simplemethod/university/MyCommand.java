@@ -67,17 +67,6 @@ public class MyCommand implements Runnable {
             System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Nie wybrano żadnego skłądu!|@"));
             System.exit(1);
         }
-
-        // couchbase.init();
-
-        // couchbase.findAllByCurrentSemester();
-        //couchbase.setStudentEmailByAlbumNumber(85218,"m.mlodawski@simplemethod.io");
-        //couchbase.setStudentGradesByAlbumNumberAndSubjectNameAndIndependentStudyType(85218,"PSR",3);
-        // couchbase.findOneByAlbumNumber(85218);
-
-        // couchbase.findAllBySubjectsNameAndLectureGrades("PSR",6);
-
-
     }
 
 
