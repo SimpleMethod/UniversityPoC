@@ -8,7 +8,6 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @Resource
-@AllArgsConstructor
 public class LecturerSubjectModel {
     @NotEmpty
     String name;
@@ -16,4 +15,13 @@ public class LecturerSubjectModel {
     String group;
     @NotEmpty
     String type;
+
+    public LecturerSubjectModel(@NotEmpty String name, @NotEmpty String group, @NotEmpty String type) {
+        this.name = name;
+        this.group = group;
+        this.type = type;
+    }
+
+    public LecturerSubjectModel() {
+    }
 }
