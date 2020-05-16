@@ -18,11 +18,6 @@ public class MyCommand implements Runnable {
     @Autowired
     CouchbaseLecturerDAO couchbaseLecturerDAO;
 
-    @Autowired
-    MongodbConfig mongodbConfig;
-
-    @Autowired
-    MainViewMongodb mainViewMongodb;
 
     @Autowired
     MainViewCouchbase mainViewCouchbase;
@@ -39,45 +34,16 @@ public class MyCommand implements Runnable {
     @CommandLine.Option(names = {"-b", "--bucket"}, description = "Bucket name.")
     private String[] bucket = new String[]{"university","universityLecturer"};
 
-    @CommandLine.Option(names = {"-t", "--type"}, description = "Type of database M=MongoDB C=Couchbase")
-    private String[] type = new String[]{"C"};
-
     @SneakyThrows
     public void run() {
-
-        if(type[0].equals("C") || type[0].equals("c"))
+        if(bucket.length!=2)
         {
-            if(bucket.length!=2)
-            {
-                System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Brak wymaganych danych!|@"));
-                System.exit(1);
-            }
-
-            couchbaseConfig.init(ipAddress, login, password, bucket);
-            couchbaseLecturerDAO.init(ipAddress,login,password,bucket);
-            mainViewCouchbase.menu();
-        }
-        else if(type[0].equals("M") || type[0].equals("m"))
-        {
-            mongodbConfig.openConnection(ipAddress,bucket);
-            mainViewMongodb.menu();
-        }
-        else
-        {
-            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Nie wybrano żadnego skłądu!|@"));
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold,fg(red) Brak wymaganych danych!|@"));
             System.exit(1);
         }
-
-        // couchbase.init();
-
-        // couchbase.findAllByCurrentSemester();
-        //couchbase.setStudentEmailByAlbumNumber(85218,"m.mlodawski@simplemethod.io");
-        //couchbase.setStudentGradesByAlbumNumberAndSubjectNameAndIndependentStudyType(85218,"PSR",3);
-        // couchbase.findOneByAlbumNumber(85218);
-
-        // couchbase.findAllBySubjectsNameAndLectureGrades("PSR",6);
-
-
+        couchbaseConfig.init(ipAddress, login, password, bucket);
+        couchbaseLecturerDAO.init(ipAddress,login,password,bucket);
+        mainViewCouchbase.menu();
     }
 
 
